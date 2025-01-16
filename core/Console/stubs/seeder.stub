@@ -1,0 +1,18 @@
+<?php
+
+namespace Database\Seeders;
+
+use Core\Database\Seeder;
+use App\Models\{{model}};
+
+class {{className}} extends Seeder
+{
+    public function run(): void
+    {
+        $this->createMany({{model}}::class, 10, function($faker) {
+            return [
+                // Define your factory data here
+            ];
+        });
+    }
+} 

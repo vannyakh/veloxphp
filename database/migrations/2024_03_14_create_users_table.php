@@ -1,26 +1,25 @@
 <?php
 
 use Core\Database\Migration;
+use Core\Database\Schema;
+use Core\Database\Blueprint;
 
 class CreateUsersTable extends Migration
 {
     public function up(): void
     {
-        $this->createTable('users', function($table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('password');
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('remember_token')->nullable();
             $table->timestamps();
-            $table->softDeletes();
-
-            $table->unique('email');
         });
     }
 
     public function down(): void
     {
-        $this->dropTable('users');
+        Schema::dropIfExists('users');
     }
 } 

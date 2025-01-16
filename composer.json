@@ -1,17 +1,16 @@
 {
-    "name": "your-vendor/velox-framework",
-    "description": "A lightweight PHP framework inspired by Laravel",
+    "name": "veloxphp/veloxphp",
+    "description": "A lightweight PHP framework for building web applications and APIs",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
-            "name": "Your Name",
-            "email": "your.email@example.com"
+            "name": "Thecam Zones",
+            "email": "vannya168@thecamzones.pro"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
-        "php": "^8.1",
+        "php": "^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
         "vlucas/phpdotenv": "^5.5",
@@ -19,19 +18,21 @@
         "psr/http-message": "^2.0",
         "monolog/monolog": "^3.0",
         "symfony/var-dumper": "^6.0",
-        "filp/whoops": "^2.15"
+        "filp/whoops": "^2.15",
+        "firebase/php-jwt": "^6.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0",
-        "mockery/mockery": "^1.6",
         "fakerphp/faker": "^1.23",
         "symfony/var-dumper": "^6.0",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.4"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Core\\": "core/"
+            "Core\\": "core/",
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "core/Helpers.php"
@@ -43,20 +44,22 @@
         }
     },
     "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
+        "dev": "./velox-dev",
+        "dev:host": "./velox-dev --host 0.0.0.0",
+        "dev:port": "./velox-dev --port 8080",
+        "dev:watch": "php -S localhost:8000 -t public public/router.php & npm run watch",
+        "start": "@php -S localhost:8000 -t public",
         "test": "phpunit",
-        "analyse": "phpstan analyse",
-        "check-style": "phpcs -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app core tests",
-        "fix-style": "phpcbf -p --standard=PSR12 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 app core tests"
+        "test:coverage": "phpunit --coverage-html coverage",
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "analyze": "phpstan analyse"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -1,0 +1,27 @@
+# Prometheus configuration for metrics
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['localhost:9113']
+
+  - job_name: 'php-fpm'
+    static_configs:
+      - targets: ['localhost:9253']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['localhost:9121']
+
+# Grafana dashboard configuration
+apiVersion: 1
+providers:
+  - name: 'Default'
+    orgId: 1
+    folder: ''
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards 

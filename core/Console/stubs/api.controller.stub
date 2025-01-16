@@ -3,78 +3,114 @@
 namespace {{namespace}};
 
 use Core\Controller;
+use Core\Api\Traits\ApiResponse;
 use App\Models\{{model}};
+use App\Resources\{{model}}Resource;
+use App\Http\Requests\{{model}}\Create{{model}}Request;
+use App\Http\Requests\{{model}}\Update{{model}}Request;
 
-class {{name}} extends Controller
+class {{className}} extends Controller
 {
+    use ApiResponse;
+
+    /**
+     * @description List all {{model}}s with pagination
+     * @return JsonResponse
+     */
     public function index()
     {
         $items = {{model}}::query()
+            ->filter($this->request->all())
             ->paginate($this->request->get('per_page', 15));
 
-        return $this->json([
-            'data' => $items->items(),
-            'meta' => $items->meta()
-        ]);
+        return $this->success(
+            {{model}}Resource::collection($items),
+            '{{model}}s retrieved successfully'
+        );
     }
 
-    public function store()
+    /**
+     * @description Create new {{model}}
+     * @param Create{{model}}Request $request
+     * @return JsonResponse
+     */
+    public function store(Create{{model}}Request $request)
     {
-        $data = $this->validate($this->request->all(), [
-            // Add validation rules
-        ]);
+        if (!$request->validate()) {
+            return $this->error('Validation failed', 422, $request->errors());
+        }
 
-        $item = {{model}}::create($data);
+        $item = {{model}}::create($request->validated());
 
-        return $this->json([
-            'data' => $item,
-            'message' => '{{model}} created successfully'
-        ], 201);
+        return $this->success(
+            new {{model}}Resource($item),
+            '{{model}} created successfully',
+            201
+        );
     }
 
+    /**
+     * @description Get single {{model}} by ID
+     * @param int $id
+     * @return JsonResponse
+     */
     public function show($id)
     {
         $item = {{model}}::find($id);
         
         if (!$item) {
-            return $this->json(['message' => '{{model}} not found'], 404);
+            return $this->error('{{model}} not found', 404);
         }
 
-        return $this->json(['data' => $item]);
+        return $this->success(
+            new {{model}}Resource($item)
+        );
     }
 
-    public function update($id)
+    /**
+     * @description Update {{model}} by ID
+     * @param int $id
+     * @param Update{{model}}Request $request
+     * @return JsonResponse
+     */
+    public function update($id, Update{{model}}Request $request)
     {
         $item = {{model}}::find($id);
         
         if (!$item) {
-            return $this->json(['message' => '{{model}} not found'], 404);
+            return $this->error('{{model}} not found', 404);
         }
 
-        $data = $this->validate($this->request->all(), [
-            // Add validation rules
-        ]);
+        if (!$request->validate()) {
+            return $this->error('Validation failed', 422, $request->errors());
+        }
 
-        $item->fill($data)->save();
+        $item->update($request->validated());
 
-        return $this->json([
-            'data' => $item,
-            'message' => '{{model}} updated successfully'
-        ]);
+        return $this->success(
+            new {{model}}Resource($item),
+            '{{model}} updated successfully'
+        );
     }
 
+    /**
+     * @description Delete {{model}} by ID
+     * @param int $id
+     * @return JsonResponse
+     */
     public function destroy($id)
     {
         $item = {{model}}::find($id);
         
         if (!$item) {
-            return $this->json(['message' => '{{model}} not found'], 404);
+            return $this->error('{{model}} not found', 404);
         }
 
         $item->delete();
 
-        return $this->json([
-            'message' => '{{model}} deleted successfully'
-        ]);
+        return $this->success(
+            null,
+            '{{model}} deleted successfully'
+        );
     }
 } 

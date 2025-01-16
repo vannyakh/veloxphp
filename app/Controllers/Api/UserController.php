@@ -4,39 +4,30 @@ namespace App\Controllers\Api;
 
 use Core\Controller;
 use App\Models\User;
-use App\Transformers\UserTransformer;
-use App\Http\Requests\Api\CreateUserRequest;
-use Core\Api\QueryParams\QueryParameters;
+use App\Resources\UserResource;
+use App\Http\Requests\User\CreateUserRequest;
 use Core\Api\Traits\{ApiResponse, Cacheable};
 
 class UserController extends Controller
 {
     use ApiResponse, Cacheable;
 
-    protected UserTransformer $transformer;
-    protected QueryParameters $queryParams;
-
-    public function __construct()
-    {
-        $this->transformer = new UserTransformer();
-        $this->queryParams = new QueryParameters($this->request->all());
-        $this->queryParams->allowedIncludes(['profile', 'posts', 'roles']);
-        $this->queryParams->allowedFilters(['role', 'status', 'created_at']);
-        $this->queryParams->allowedSorts(['name', 'email', 'created_at']);
-    }
-
     public function index()
     {
         $users = User::query()
-            ->with($this->queryParams->includes())
-            ->filter($this->queryParams->filters())
-            ->sort($this->queryParams->sort())
+            ->when($this->request->has('search'), function($query) {
+                $search = $this->request->get('search');
+                $query->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            })
+            ->when($this->request->has('role'), function($query) {
+                $query->where('role', $this->request->get('role'));
+            })
             ->paginate();
 
         return $this->cacheResponse(
-            $this->transformer->with($this->queryParams->includes())
-                ->collection($users->items()),
-            $users->meta()
+            UserResource::collection($users),
+            'Users retrieved successfully'
         );
     }
 
@@ -48,14 +39,10 @@ class UserController extends Controller
 
         $user = User::create($request->validated());
         
-        if ($request->has('profile')) {
-            $user->profile()->create($request->input('profile'));
-        }
-
         $this->clearCache();
 
         return $this->success(
-            $this->transformer->transform($user),
+            new UserResource($user),
             'User created successfully',
             201
         );

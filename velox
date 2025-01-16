@@ -3,7 +3,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Core\Console\Application;
+$app = require_once __DIR__ . '/bootstrap/app.php';
 
-$app = new Application();
-exit($app->run($argv)); 
+$kernel = $app->make(\Core\Console\Kernel::class);
+$status = $kernel->handle();
+
+exit($status); 
