@@ -1,0 +1,83 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Composer dependencies
+/vendor/
+composer.lock
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.phpstorm.meta.php
+_ide_helper.php
+
+# Cache and logs
+/storage/cache/*
+/storage/logs/*
+/storage/framework/*
+/storage/app/*
+!/storage/cache/.gitkeep
+!/storage/logs/.gitkeep
+!/storage/framework/.gitkeep
+!/storage/app/.gitkeep
+
+# Public storage symlinks
+/public/storage
+/public/hot
+
+# Node modules
+/node_modules/
+package-lock.json
+
+# Build files
+/public/build/
+/public/dist/
+/public/mix-manifest.json
+
+# Testing
+/coverage/
+.phpunit.result.cache
+phpunit.xml.bak
+
+# Operating System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Application specific
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Configuration files that might contain sensitive data
+config/*.php
+!config/*.example.php
+
+# Database
+*.sqlite
+*.sqlite-journal
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Local development specific files
+docker-compose.override.yml
+docker-compose.local.yml
+Homestead.json
+Homestead.yaml
+
+# Generated documentation
+/docs/api/*
+/docs/coverage/*

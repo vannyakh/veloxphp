@@ -1,0 +1,80 @@
+<?php
+
+namespace {{namespace}};
+
+use Core\Controller;
+use App\Models\{{model}};
+
+class {{name}} extends Controller
+{
+    public function index()
+    {
+        $items = {{model}}::query()
+            ->paginate($this->request->get('per_page', 15));
+
+        return $this->json([
+            'data' => $items->items(),
+            'meta' => $items->meta()
+        ]);
+    }
+
+    public function store()
+    {
+        $data = $this->validate($this->request->all(), [
+            // Add validation rules
+        ]);
+
+        $item = {{model}}::create($data);
+
+        return $this->json([
+            'data' => $item,
+            'message' => '{{model}} created successfully'
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $item = {{model}}::find($id);
+        
+        if (!$item) {
+            return $this->json(['message' => '{{model}} not found'], 404);
+        }
+
+        return $this->json(['data' => $item]);
+    }
+
+    public function update($id)
+    {
+        $item = {{model}}::find($id);
+        
+        if (!$item) {
+            return $this->json(['message' => '{{model}} not found'], 404);
+        }
+
+        $data = $this->validate($this->request->all(), [
+            // Add validation rules
+        ]);
+
+        $item->fill($data)->save();
+
+        return $this->json([
+            'data' => $item,
+            'message' => '{{model}} updated successfully'
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $item = {{model}}::find($id);
+        
+        if (!$item) {
+            return $this->json(['message' => '{{model}} not found'], 404);
+        }
+
+        $item->delete();
+
+        return $this->json([
+            'message' => '{{model}} deleted successfully'
+        ]);
+    }
+} 
